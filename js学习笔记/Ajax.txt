@@ -1,0 +1,127 @@
+1.HTTP是计算机通过网络进行通信的规则
+2.HTTP是一种无状态的协议(不建立持久的连接，服务端不保留连接的相关信息,浏览器发出请求和服务器返回响应是一个没有记忆的过程)
+3.一个完整的【HTTP请求】过程有7个步骤：
+1>建立TCP连接
+2>Web浏览器向Web服务器发送请求命令
+3>Web浏览器发送请求头信息
+4>Web服务器应答
+5>Web服务器发送应答头信息
+6>Web服务器向浏览器发送数据
+7>Web服务器关闭TCP连接
+
+http请求：
+1.HTTP请求的方法或动作，post或get
+2.正在请求的URL
+3.请求头，包含一些客户端环境信息，身份验证信息等
+4.请求体(请求正文)，包含要发送的一些字符串信息,表单信息等等
+//请求头和请求体之间有一个空行，表面请求头已经结束
+GET:一般用于信息的获取，使用URL传递参数，对发送信息的数量也有限制，一般在2000字符！默认方式，一般用于查询、获取操作,不是很安全，任何人可见，信息都显示在URL中
+POST：一般用于修改服务器上的资源，对所发送的数量无限制。一般用于发送表单数据，新建，修改，删除等操作，要安全一些，不在URL中显示，对其他人不显示。
+【幂等】:一个操作任意多次执行所产生的影响均与一次执行的影响相同。GET请求就是一种幂等操作。
+
+【HTTP响应】一般由3部分组成：
+①一个数字或文字组成的状态码，用来显示请求是成功还是失败
+②响应头，和请求头一样包含许多有用信息，如服务器类型、日期时间、内容类型和长度等
+③响应体，即响应正文//响应头和响应体之间有空行
+
+【HTTP状态码】
+1XX：信息类，表示收到Web浏览器请求，正在进一步处理中
+2XX:成功，表示用户请求被正确接收
+3XX:重定向，表示请求没有成功，客户必须采取进一步动作
+4XX:客户端错误，表示客户端提交的请求有错误，例如：404 NOT Found,意味着请求中所引用的文档不存在
+5XX:服务器错误，表示服务器不能完成对请求的处理，如：500
+
+XMLHttpRequest取得响应
+
+* responseText:获得字符串形式的响应数据
+* responseXML：获得XML形式的响应数据（比较少）
+* status和statusText:以数字和文本形式返回HTTP状态码 
+* getAllResponseHeader()：获取所有的响应报头
+* getResponseHeader()：查询响应中的某个字段的值
+
+readyState属性的变化代表服务器响应的变化
+0：请求未初始化，open还没有调用
+1：服务器连接已建立，open已经调用了
+2：请求已接收，也就是接收到头信息了
+3：请求处理中，也就是接收到了响应主体
+4：请求已完成，且响应已就绪，也就是响应完成了
+
+var request = new XMLHttpRequest() //建立XHR对象
+request.open("GET","get.php",true); //用get方法异步打开get.php
+request.send(); //发送请求头信息
+request.onreadystatechange=function(){
+if(request.readState===4&&request.status===200){
+//做一些事情 request.responseText;
+}
+}
+
+通过onreadystatechange事件 ，对readyState属性进行监听即对服务器的响应进行监听，
+readyState===4响应完成；
+status===200，请求成功
+
+建立异步请求的过程4个步骤：
+a:new一个XHR对象
+b:调用open方法
+c:send一些数据
+d:对过程进行监听，来知道服务器是不是正确地做出了响应，接着可以做一些事情
+（监听readyState,响应成功可以做一些事情，比如获取服务器响应的内容在页面上做一些呈现）
+
+XMLHttpRequest发送请求：
+两个方法
+open(method,url,async)
+method：规定HTTP发送请求的方式是get还是post,不区分大小写，一般来说用大写
+url：请求地址(相对地址或绝对地址)
+async:同步/异步(false/true)，默认是异步也就是true，可以不用填写
+
+send(string):发送到服务器（该参数可以填或者不填-----get方法不填或填null，post:一般要填）
+
+例如：
+request.open("POST","create.php",true);
+request.setRequestHeader("Content-type","application/x-www-form-urlencoded ")//设置HTTP头信息--一定要写在open()和send()之间
+request.send("name=xxxx&set=xxx");
+
+跨域：
+Javascript出于安全方面的考虑，不允许跨域调用其他页面的对象。什么是跨域呢？简单地理解就是因为javascript同源策略的限制，a.com域名下的js无法操作b.com或是c.a.com域名下的对象。
+跨域处理，三种方法：
+1、处理跨域方法一 代理
+通过在同域名下的web服务器端创建一个代理：
+北京服务器(域名:www.beijing.com)
+上海服务器(域名：www.shanghai.com)
+比如在北京的web服务器的后台(www.beijing.com/proxy-shanghaiservice.php)来调用上海服务器(www.shanghai.com/services.php)的服务，然后再把访问结果返回给前端，这样前端调用北京同域名的服务就和调用上海的服务效果相同了。
+2、处理跨域方式二——JSONP(只支持GET请求)：
+JSONP可用于解决主流浏览器的跨域数据访问的问题。
+在www.aaa.com页面中：
+<script>
+function jsonp(json){
+alert(json["name"]);
+}
+</script>
+<script src="http;//www.bbb.com/jsonp.js"></script>
+在www.bbb.com页面中：
+jsonp({'name':'xx','age':24})
+3、处理跨域的方法三——XHR2：
+1、HTML5提供的XMLHttpRequest Level2已经实现了跨域访问以及其他的一些新功能
+2.IE10以下的版本都不支持
+3.在服务器端
+header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Methods:POST,GET');
+
+1、json解析的方法有两种：eval()和parse()方法
+
+eval() 较危险，不光解析了字符串，还解析了js方法，无论何时用eval()都是非常危险的。-----不建议使用
+JSON.parse()较好，会解析出错误。
+//例子：首先定义了JSON字符串jsondata
+eval()方法：
+var jsondata='{"staff":[{"name":"洪七","age":70},{"name":"郭靖","age":35},{"name":"黄蓉","age":30}]}'；
+var jsonobj=veal('('+jsondata+')');
+alert(jsonobj.staff[0].name);
+parse()方法：
+var jsondata='{"staff":[{"name":"洪七","age":70},{"name":"郭靖","age":35},{"name":"黄蓉","age":30}]}'；
+var jsonobj=JSON.parse(jsondata);
+alert(jsonobj.staff[0].name);
+都可以，若把age后的70改成alert（123）；若用eval()方法，发现页面是先弹出123，再弹出洪七；也就是说用eval不仅解析了字符串，还执行了JS里的方法
+用parse（）解析字符串，发现会抛出一个错误。
+这说明用eval()不会看json是否合法，eval非常危险。所以尽量使用JSON.parse方法，来解析json里的字符串，而且还可以解析出json里的一些错误。
+
+2、json校验工具jsonlint
+3、把json格式化，地址:jsonlint.com
