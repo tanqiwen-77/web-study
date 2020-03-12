@@ -1,0 +1,41 @@
+除了class写成className ,HEML里怎么写，JS就怎么写
+<a href=“javascript:;”></a>
+操纵属性 1.Obj.value=' '   2.Obj['value']=' '
+               function setStyle(name,value)  设传参（‘width’，'400px')
+              {
+                   var oDiv=document.getElementById('div')
+                   oDiv.style.name=value; (会认为你添加了一个新的name属性）
+                应改为：oDiv.style[name]=value;
+              }
+字符串要加’‘，变量不用
+元素.style.属性=xxx是修改行间样式（能够从行间取出修改，不能从样式表中取出）
+优先级的原因，给了style之后再修改className不会有效果
+先清空所有按钮，再选中当前按钮 先隐藏所有Div，再显示”当前”Div
+什么时候用索引值——需要知道“第几个”的时候
+当给innerHTML赋值时，如果赋值为HTML代码，会执行代码
+字符串中间添加数字加法用括号 'abc'+(12+5)+'def'   打印abc17def
+什么是真、什么是假：
+真：true、非零数字、非空字符串、非空对象
+假：false、数字零、空字符串、空对象、undefined
+可变参（不定参）：arguments
+参数的个数可变，参数数组
+例子1：求和
+求所有参数的和
+例子2：CSS函数
+判断arguments.length
+给参数取名，增强可读性
+取非行间样式(不能用来设置)：
+obj.currentStyle[attr]
+getComputedStyle(obj, false)[attr]
+
+var arr=[12, 5, 8, 9];
+var arr=new Array(12, 5, 8, 9);
+没有任何差别，[]的性能略高，因为代码短
+
+开启定时器
+setInterval	间隔型
+setTimeout	延时型
+停止定时器
+clearInterval
+clearTimeout
+
