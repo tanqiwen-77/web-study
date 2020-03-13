@@ -18,6 +18,7 @@ http请求：
 GET:一般用于信息的获取，使用URL传递参数，对发送信息的数量也有限制，一般在2000字符！默认方式，一般用于查询、获取操作,不是很安全，任何人可见，信息都显示在URL中
 POST：一般用于修改服务器上的资源，对所发送的数量无限制。一般用于发送表单数据，新建，修改，删除等操作，要安全一些，不在URL中显示，对其他人不显示。
 【幂等】:一个操作任意多次执行所产生的影响均与一次执行的影响相同。GET请求就是一种幂等操作。
+method=" "
 
 【HTTP响应】一般由3部分组成：
 ①一个数字或文字组成的状态码，用来显示请求是成功还是失败
@@ -46,6 +47,7 @@ readyState属性的变化代表服务器响应的变化
 3：请求处理中，也就是接收到了响应主体
 4：请求已完成，且响应已就绪，也就是响应完成了
 
+
 var request = new XMLHttpRequest() //建立XHR对象
 request.open("GET","get.php",true); //用get方法异步打开get.php
 request.send(); //发送请求头信息
@@ -61,6 +63,14 @@ status===200，请求成功
 
 建立异步请求的过程4个步骤：
 a:new一个XHR对象
+if(window.XMLHttpRequest)
+{
+           var oAjax=new XMLHttpRequest()
+}
+else
+{
+           var oAjax=new ActiveXobject("Microsoft.XMLHTTP")
+}
 b:调用open方法
 c:send一些数据
 d:对过程进行监听，来知道服务器是不是正确地做出了响应，接着可以做一些事情
@@ -125,3 +135,8 @@ alert(jsonobj.staff[0].name);
 
 2、json校验工具jsonlint
 3、把json格式化，地址:jsonlint.com
+
+阻止缓存 'url?t='+new Data().getTime()
+
+用没有定义的变量——报错
+用没有定义的属性——undefined
