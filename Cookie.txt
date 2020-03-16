@@ -1,0 +1,38 @@
+什么是cookie
+页面用来保存信息
+比如：自动登录、记住用户名
+cookie的特性
+同一个网站中所有页面共享一套cookie
+数量、大小有限
+过期时间
+JS中使用cookie   document.cookie
+function setCookie(name, value, iDay)
+{
+	var oDate=new Date();
+	oDate.setDate(oDate.getDate()+iDay);
+	
+	document.cookie=name+'='+value+';expires='+oDate;
+}
+
+function getCookie(name)
+{
+	var arr=document.cookie.split('; ');
+	
+	for(var i=0;i<arr.length;i++)
+	{
+		var arr2=arr[i].split('=');
+		
+		if(arr2[0]==name)
+		{
+			return arr2[1];
+		}
+	}
+	
+	return '';
+}
+
+function removeCookie(name)
+{
+	setCookie(name, 1, -1);
+}
+

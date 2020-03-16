@@ -62,3 +62,144 @@ b == 'hi';//true（先转换成基本类型再比较）
 对象的组成
 方法——函数：过程、动态的
 属性——变量：状态、静态的
+this:当前发生事件的对象（当前的方法属于谁）
+不能在系统对象中随意附加方法、属性，否则会覆盖已有方法、属性
+
+如果函数名前面加new,函数中的this不是指向window,而是一个新创建的对象
+偷偷做了两件事
+替你创建了一个空白对象
+替你返回了这个对象
+
+什么是原型
+原型是class，修改他可以影响一类元素
+在类的原型上加方法 Array.prototype.sum=function()
+var obj=new 函数（）
+     对象          类
+把一样的属性方法放原型里，直接继承效率高
+在已有对象中加入自己的属性、方法
+原型修改对已有对象的影响
+
+把面向过程的程序，改写成面向对象的形式
+原则：
+不能有函数套函数、但可以有全局变量
+过程
+onload	→	构造函数
+全局变量	→	属性
+函数		→	方法
+
+function A()
+{
+	this.abc=12;
+}
+
+A.prototype.show=function ()
+{
+	alert(this.abc);
+};
+
+//继承A
+
+function B()
+{
+	//this->new B()
+	A.call(this);                   继承属性
+}
+
+//B.prototype=A.prototype;        A变B也变
+for(var i in A.prototype)
+{
+	B.prototype[i]=A.prototype[i];        继承方法
+}
+
+B.prototype.fn=function ()
+{
+	alert('abc');
+};
+
+var objB=new B();
+var objA=new A();
+例子
+function Drag(id)
+{
+	var _this=this;
+	this.disX=0;
+	this.disY=0;
+	
+	this.oDiv=document.getElementById(id);
+	this.oDiv.onmousedown=function (ev)
+	{
+		_this.fnDown(ev);
+		
+		return false;
+	};
+};
+
+Drag.prototype.fnDown=function (ev)
+{
+	var _this=this;
+	var oEvent=ev||event;
+	
+	this.disX=oEvent.clientX-this.oDiv.offsetLeft;
+	this.disY=oEvent.clientY-this.oDiv.offsetTop;
+	
+	document.onmousemove=function (ev)
+	{
+		_this.fnMove(ev);
+	};
+	document.onmouseup=function ()
+	{
+		_this.fnUp();
+	};
+};
+
+Drag.prototype.fnMove=function (ev)
+{
+	var oEvent=ev||event;
+	
+	this.oDiv.style.left=oEvent.clientX-this.disX+'px';
+	this.oDiv.style.top=oEvent.clientY-this.disY+'px';
+};
+
+Drag.prototype.fnUp=function ()
+{
+	document.onmousemove=null;
+	document.onmouseup=null;
+};
+function LimitDrag(id)
+{
+	Drag.call(this, id);	//继承属性
+}
+
+for(var i in Drag.prototype)
+{
+	LimitDrag.prototype[i]=Drag.prototype[i];
+}
+
+
+命名空间，同一函数不会覆盖影响
+var zns={};
+
+zns.common={};
+zns.fx={};
+zns.site={};
+
+zns.common.getUser=function ()
+{
+	alert('a');
+};
+
+zns.fx.getUser=function ()
+{
+	alert('b');
+};
+
+zns.site.getUser=function ()
+{
+	alert('c');
+};
+
+zns.common.getUser();
+zns.fx.getUser();
+zns.site.getUser();
+
+
